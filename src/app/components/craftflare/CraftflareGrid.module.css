@@ -1,0 +1,31 @@
+@keyframes flareEffect {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 69, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 69, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 69, 0, 0);
+  }
+}
+
+@keyframes fireEffect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.flareAnimation {
+  animation: flareEffect 1s ease-out;
+}
+
+.fireAnimation {
+  animation: fireEffect 0.5s ease-in-out;
+}

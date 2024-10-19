@@ -1,19 +1,32 @@
-const clickContractAddress = '0x67c97D1FB8184F038592b2109F854dfb09C77C75';
-const clickContractAbi = [
+const artistPaymentContractAddress = '0x16e86C7A4f8fAFF49141e79a37845aaD22FF4a5C';
+
+const artistPaymentContractAbi = [
   {
     type: 'function',
-    name: 'click',
-    inputs: [],
+    name: 'payArtist',
+    inputs: [{ name: 'artistAddress', type: 'address' }],
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
+  },
+  {
+    type: 'event',
+    name: 'PaymentProcessed',
+    inputs: [
+      { name: 'artist', type: 'address', indexed: true },
+      { name: 'artistAmount', type: 'uint256', indexed: false },
+      { name: 'craftiaxFee', type: 'uint256', indexed: false },
+    ],
   },
 ] as const;
- 
+
 export const contracts = [
   {
-    address: clickContractAddress,
-    abi: clickContractAbi,
-    functionName: 'click',
+    address: artistPaymentContractAddress,
+    abi: artistPaymentContractAbi,
+    functionName: 'payArtist',
     args: [],
   },
 ];
+
+// You can also export individual elements if needed
+export { artistPaymentContractAddress, artistPaymentContractAbi };

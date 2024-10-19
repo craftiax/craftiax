@@ -31,3 +31,6 @@ next-env.d.ts
 
 # Cache
 .cache/
+
+# Add this line to ignore the codeRef folder
+/src/app/codeRef/

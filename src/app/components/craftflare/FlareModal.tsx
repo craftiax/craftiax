@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FaFire, FaTimes, FaEthereum } from "react-icons/fa";
-import { SiUsdc } from "react-icons/si";
 import TransactionComponents from "../TransactionComponents";
 
 interface FlareModalProps {
@@ -21,7 +20,6 @@ const FlareModal: React.FC<FlareModalProps> = ({
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("ETH");
   const [editedArtistAddress, setEditedArtistAddress] = useState(artistAddress);
-  const craftiaxAddress = "0x8ce0f94755Eb14f7AF130C1aa2cAd26dea2a2Acd"; // Replace with actual Craftiax address
 
   useEffect(() => {
     if (isOpen) {
@@ -86,7 +84,10 @@ const FlareModal: React.FC<FlareModalProps> = ({
           </div>
         </div>
         <div className="mb-6">
-          <TransactionComponents></TransactionComponents>
+          <TransactionComponents
+            artistAddress={editedArtistAddress}
+            amount={amount}
+          />
         </div>
         <div className="text-sm text-gray-400 mb-4">
           <FaEthereum className="inline mr-1" />

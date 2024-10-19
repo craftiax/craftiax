@@ -10,10 +10,22 @@ import {
 } from "@coinbase/onchainkit/transaction";
 import type { LifecycleStatus } from "@coinbase/onchainkit/transaction";
 import { Wallet, ConnectWallet } from "@coinbase/onchainkit/wallet";
-import { contracts } from "./contracts/contract";
+import {
+  artistPaymentContractAddress,
+  artistPaymentContractAbi,
+} from "./contracts/contract";
 import { useAccount } from "wagmi";
+import { parseEther } from "ethers";
 
-export default function TransactionComponents() {
+interface TransactionComponentsProps {
+  artistAddress: string;
+  amount: string;
+}
+
+export default function TransactionComponents({
+  artistAddress,
+  amount,
+}: TransactionComponentsProps) {
   const { address } = useAccount();
   const BASE_SEPOLIA_CHAIN_ID = 84532; // Base Sepolia chain ID
 
@@ -21,19 +33,26 @@ export default function TransactionComponents() {
     console.log("LifecycleStatus", status);
   }, []);
 
-  // Ensure the address in contracts is of type `0x${string}`
-  const typedContracts = contracts.map((contract) => ({
-    ...contract,
-    address: contract.address as `0x${string}`,
-  }));
+  // Convert amount to wei
+  const amountInWei = amount ? parseEther(amount) : "0";
+
+  const contracts = [
+    {
+      address: artistPaymentContractAddress as `0x${string}`,
+      abi: artistPaymentContractAbi,
+      functionName: "payArtist",
+      args: [artistAddress],
+      value: amountInWei,
+    },
+  ];
 
   return address ? (
     <Transaction
       chainId={BASE_SEPOLIA_CHAIN_ID}
-      contracts={typedContracts}
+      contracts={contracts}
       onStatus={handleOnStatus}
     >
-      <TransactionButton />
+      <TransactionButton></TransactionButton>
       <TransactionSponsor />
       <TransactionStatus>
         <TransactionStatusLabel />

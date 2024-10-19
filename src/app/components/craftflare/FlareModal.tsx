@@ -19,7 +19,9 @@ const FlareModal: React.FC<FlareModalProps> = ({
 }) => {
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("ETH");
-  const [editedArtistAddress, setEditedArtistAddress] = useState(artistAddress);
+  const [editedArtistAddress, setEditedArtistAddress] = useState(
+    "0x261B8A385bE4EDd576da8322e7eacE8148A08C46"
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -58,6 +60,7 @@ const FlareModal: React.FC<FlareModalProps> = ({
               onChange={(e) => setEditedArtistAddress(e.target.value)}
               className="w-full bg-transparent text-white focus:outline-none"
               placeholder="Artist Address"
+              readOnly
             />
           </div>
         </div>

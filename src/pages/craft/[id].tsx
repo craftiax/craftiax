@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { FaFire, FaHeart, FaComment } from "react-icons/fa";
-import FlareModal from "../../components/craftflare/FlareModal";
+import FlareModal from "../../app/components/craftflare/FlareModal";
 
 const CraftDetailPage: React.FC = () => {
   const router = useRouter();

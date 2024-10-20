@@ -28,8 +28,8 @@ const CreatorProfile = ({ params }) => {
     stats: {
       followers: 5280,
       nftsCreated: 42,
-      totalFlares: 1337,
-      totalUSDCEarned: 15000,
+      totalFlares: 137,
+      totalUSDCEarned: 2000,
     },
     joinDate: "2023-01-15",
     bio: "Digital artist exploring the intersection of technology and creativity. Specializing in vibrant, futuristic landscapes and abstract compositions that push the boundaries of digital art.",
@@ -43,7 +43,7 @@ const CreatorProfile = ({ params }) => {
       {
         id: 1,
         title: "Cosmic Dreams",
-        image: "/nft1.jpg",
+        image: "/nft1.jpeg",
         flaresReceived: 42,
         usdcReceived: 250,
       },

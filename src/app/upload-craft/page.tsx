@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import ClientLayout from "../ClientLayout";
 import { FaImage, FaUpload, FaTimes } from "react-icons/fa";
@@ -32,18 +32,39 @@ const UploadCraft = () => {
 
     setUploading(true);
     try {
-      const data = new FormData();
-      data.set("file", file);
-      const uploadRequest = await fetch("/api/files", {
+      // Upload image file
+      const imageData = new FormData();
+      imageData.set("file", file);
+      const imageUploadRequest = await fetch("/api/files", {
         method: "POST",
-        body: data,
+        body: imageData,
       });
-      const ipfsUrl = await uploadRequest.json();
-      setUploadedUrl(ipfsUrl);
-      console.log("Uploaded to IPFS:", ipfsUrl);
-      // Here you would typically save the metadata (title, description, ipfsUrl) to your backend
+      const imageUploadResponse = await imageUploadRequest.json();
+      const imageIpfsHash = imageUploadResponse.ipfsHash;
+
+      // Create metadata object
+      const metadata = {
+        name: title,
+        description: description,
+        image: `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${imageIpfsHash}`,
+      };
+
+      // Upload metadata
+      const metadataUploadRequest = await fetch("/api/metadata", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(metadata),
+      });
+      const metadataUploadResponse = await metadataUploadRequest.json();
+      const metadataIpfsHash = metadataUploadResponse.ipfsHash;
+
+      setUploadedUrl(
+        `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${metadataIpfsHash}`
+      );
+      console.log("Metadata uploaded to IPFS:", metadataIpfsHash);
       alert("Craft uploaded successfully!");
-      router.push("/creator");
     } catch (error) {
       console.error("Error uploading file:", error);
       alert("Error uploading file. Please try again.");
@@ -151,7 +172,7 @@ const UploadCraft = () => {
               <div className="flex justify-between">
                 <button
                   type="button"
-                  onClick={handleCancel}
+                  onClick={() => router.push("/creator")}
                   className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center"
                 >
                   Cancel
@@ -166,6 +187,28 @@ const UploadCraft = () => {
                 </button>
               </div>
             </form>
+
+            {uploadedUrl && (
+              <div className="mt-8 p-4 bg-gray-700 rounded-lg">
+                <h2 className="text-xl font-semibold mb-2 text-green-400">
+                  Upload Successful!
+                </h2>
+                <p className="text-sm text-gray-300 mb-2">
+                  Your craft metadata is available at:
+                </p>
+                <a
+                  href={uploadedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 break-all"
+                >
+                  {uploadedUrl}
+                </a>
+                <p className="mt-4 text-sm text-gray-400">
+                  Congratulations! Craftiax Creator
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

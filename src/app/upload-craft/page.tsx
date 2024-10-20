@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ClientLayout from "../ClientLayout";
 import { FaImage, FaUpload, FaTimes } from "react-icons/fa";
+import Image from "next/image";
 
 const UploadCraft = () => {
   const router = useRouter();
@@ -11,6 +12,8 @@ const UploadCraft = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -22,10 +25,31 @@ const UploadCraft = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically upload the file and metadata to your backend
-    console.log("Uploading:", { file, title, description });
-    // After successful upload, redirect to the creator dashboard
-    router.push("/creator");
+    if (!file) {
+      alert("Please select a file to upload");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const data = new FormData();
+      data.set("file", file);
+      const uploadRequest = await fetch("/api/files", {
+        method: "POST",
+        body: data,
+      });
+      const ipfsUrl = await uploadRequest.json();
+      setUploadedUrl(ipfsUrl);
+      console.log("Uploaded to IPFS:", ipfsUrl);
+      // Here you would typically save the metadata (title, description, ipfsUrl) to your backend
+      alert("Craft uploaded successfully!");
+      router.push("/creator");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Error uploading file. Please try again.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -53,10 +77,11 @@ const UploadCraft = () => {
                 >
                   {previewUrl ? (
                     <div className="w-full h-full relative group">
-                      <img
+                      <Image
                         src={previewUrl}
                         alt="Preview"
-                        className="w-full h-full object-cover"
+                        layout="fill"
+                        objectFit="cover"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
@@ -133,10 +158,11 @@ const UploadCraft = () => {
                 </button>
                 <button
                   type="submit"
+                  disabled={uploading}
                   className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-900 flex items-center"
                 >
                   <FaUpload className="mr-2" />
-                  Upload Craft
+                  {uploading ? "Uploading..." : "Upload Craft"}
                 </button>
               </div>
             </form>

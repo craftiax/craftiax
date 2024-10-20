@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import ClientLayout from "../ClientLayout";
 import { FaImage, FaUpload, FaTimes } from "react-icons/fa";
 import Image from "next/image";
+import { useAccount } from "wagmi";
+import MintNFTTransaction from "../components/MintNFTTransaction";
 
 const UploadCraft = () => {
   const router = useRouter();
@@ -14,6 +16,8 @@ const UploadCraft = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const { address } = useAccount(); // Get the connected wallet address
+  const [showMintTransaction, setShowMintTransaction] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -47,6 +51,8 @@ const UploadCraft = () => {
         name: title,
         description: description,
         image: `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${imageIpfsHash}`,
+        artist_address: address || "Unknown",
+        creation_time: new Date().toISOString(),
       };
 
       // Upload metadata
@@ -60,11 +66,11 @@ const UploadCraft = () => {
       const metadataUploadResponse = await metadataUploadRequest.json();
       const metadataIpfsHash = metadataUploadResponse.ipfsHash;
 
-      setUploadedUrl(
-        `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${metadataIpfsHash}`
-      );
+      const uploadedUrl = `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${metadataIpfsHash}`;
+      setUploadedUrl(uploadedUrl);
       console.log("Metadata uploaded to IPFS:", metadataIpfsHash);
       alert("Craft uploaded successfully!");
+      setShowMintTransaction(true);
     } catch (error) {
       console.error("Error uploading file:", error);
       alert("Error uploading file. Please try again.");
@@ -207,6 +213,18 @@ const UploadCraft = () => {
                 <p className="mt-4 text-sm text-gray-400">
                   Congratulations! Craftiax Creator
                 </p>
+              </div>
+            )}
+            {showMintTransaction && uploadedUrl && (
+              <div className="mt-8 p-4 bg-gray-700 rounded-lg">
+                <h2 className="text-xl font-semibold mb-2 text-green-400">
+                  Mint your NFT
+                </h2>
+                <p className="text-sm text-gray-300 mb-4">
+                  Your craft metadata is ready. Click the button below to mint
+                  your NFT.
+                </p>
+                <MintNFTTransaction metadataUrl={uploadedUrl} />
               </div>
             )}
           </div>

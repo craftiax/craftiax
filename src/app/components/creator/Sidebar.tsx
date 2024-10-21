@@ -1,7 +1,12 @@
 import { FaCrown, FaMedal } from "react-icons/fa";
 import Image from "next/image";
+import { CreatorData } from "./types";
 
-const Sidebar = ({ creator }) => {
+export interface SidebarProps {
+  creator: CreatorData;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ creator }) => {
   // Dummy top supporters data
   const topSupporters = [
     {

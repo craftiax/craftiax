@@ -5,20 +5,42 @@ import { useAccount } from "wagmi";
 import UserProfile from "../../components/profile/UserProfile";
 import CreatorProfile from "../../components/profile/CreatorProfile";
 import { getUserProfile } from "../../utils/profileUtils";
-import { UserProfile as UserProfileType } from "../../../types/UserProfile";
 import { useProfile } from "../../hooks/useProfile";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+
+interface Flare {
+  id: string;
+  usdcAmount: number; // Add this line
+  // Add more properties as needed
+}
+
+type UserProfileType = {
+  isCreator: boolean;
+  username: string;
+  handle?: string;
+  avatarUrl?: string;
+  bannerUrl?: string;
+  bio?: string;
+  joinDate?: number;
+  favoriteArtist?: string;
+  nftsCollected?: number;
+  flaresSent?: number;
+  interests?: string[];
+  craftsUploaded: number;
+  nfts: { id: string; image: string; title: string; flares: Flare[] }[];
+  address: string; // Add this line
+};
 
 const ExplorerPage = () => {
   const { address, isConnected } = useAccount();
   const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
   const { profileType, isLoading: isProfileLoading } = useProfile();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
-  const explorerId = params.id as string;
+  const explorerId = (params?.id as string) ?? "";
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     console.log("ExplorerPage useEffect", {
@@ -114,7 +136,9 @@ const ExplorerPage = () => {
               About {userProfile.username}
             </h2>
             <p className="text-lg mb-4 italic text-gray-300">
-              "{userProfile.bio || "Crafting the future, one NFT at a time."}"
+              &ldquo;
+              {userProfile.bio || "Crafting the future, one NFT at a time"}
+              &rdquo;
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
@@ -144,14 +168,16 @@ const ExplorerPage = () => {
               </h3>
               <div className="flex flex-wrap gap-2">
                 {userProfile.interests
-                  ? userProfile.interests.map((interest, index) => (
-                      <span
-                        key={index}
-                        className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm"
-                      >
-                        {interest}
-                      </span>
-                    ))
+                  ? userProfile.interests.map(
+                      (interest: string, index: number) => (
+                        <span
+                          key={index}
+                          className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm"
+                        >
+                          {interest}
+                        </span>
+                      )
+                    )
                   : ["Digital Art", "Collectibles", "Virtual Worlds"].map(
                       (interest, index) => (
                         <span

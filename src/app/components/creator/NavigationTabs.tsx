@@ -1,4 +1,10 @@
-const NavigationTabs = ({ activeTab, setActiveTab }) => {
+const NavigationTabs = ({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}) => {
   const tabs = ["gallery", "about", "collections", "flareActivity"];
 
   return (

@@ -1,10 +1,19 @@
 import { useState } from "react";
 
-const TipArtistModal = ({ artist, onClose }) => {
+interface Artist {
+  name: string;
+}
+
+interface TipArtistModalProps {
+  artist: Artist;
+  onClose: () => void;
+}
+
+const TipArtistModal = ({ artist, onClose }: TipArtistModalProps) => {
   const [tipAmount, setTipAmount] = useState("");
   const [comment, setComment] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle the tip submission logic here
     console.log(

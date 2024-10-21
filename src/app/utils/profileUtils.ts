@@ -1,9 +1,8 @@
-import { UserProfile } from '../../types/UserProfile';
 
 // This is a mock implementation. Replace with actual API calls or blockchain interactions.
 const mockProfiles: { [key: string]: UserProfile } = {};
 
-export const getUserProfile = async (address: string): Promise<UserProfile> => {
+                                                                                                                                                                                                                                                                                                                                       export const getUserProfile = async (address: string): Promise<UserProfile> => {
   if (!mockProfiles[address]) {
     mockProfiles[address] = {
       address,

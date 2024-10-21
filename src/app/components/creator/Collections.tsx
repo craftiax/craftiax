@@ -1,7 +1,15 @@
 import Image from "next/image";
 import { FaFire } from "react-icons/fa";
 
-const Collections = ({ collections = [] }) => {
+interface Collection {
+  id: string | number;
+  name: string;
+  coverImage: string;
+  itemCount: number;
+  totalFlares: number;
+}
+
+const Collections = ({ collections = [] }: { collections: Collection[] }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {collections.map((collection) => (
@@ -11,7 +19,7 @@ const Collections = ({ collections = [] }) => {
   );
 };
 
-const CollectionCard = ({ collection }) => (
+const CollectionCard = ({ collection }: { collection: Collection }) => (
   <div className="bg-gray-800 rounded-lg overflow-hidden transition-transform hover:scale-105">
     <div className="relative h-48">
       <Image

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import WalletConnect from "../WalletConnect";
+import { WalletComponents } from "../WalletComponents";
 
 const ProfileSelectHeader = () => {
   return (
@@ -39,7 +39,7 @@ const ProfileSelectHeader = () => {
               </Link>
             </li>
           </ul>
-          <WalletConnect />
+          <WalletComponents />
         </nav>
       </div>
     </header>

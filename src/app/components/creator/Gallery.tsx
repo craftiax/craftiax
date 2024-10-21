@@ -4,7 +4,15 @@ import { FaFire } from "react-icons/fa";
 import SendFlareTransaction from "./SendFlareTransaction";
 import Link from "next/link";
 
-const Gallery = ({ nfts }) => {
+interface NFT {
+  id: number;
+  title: string;
+  image: string;
+  flaresReceived: number;
+  totalUSDC: number;
+}
+
+const Gallery = ({ nfts }: { nfts: NFT[] }) => {
   // Mock data with added USDC totals
   const mockNfts = [
     {
@@ -60,7 +68,7 @@ const Gallery = ({ nfts }) => {
   );
 };
 
-const NFTCard = ({ nft }) => {
+const NFTCard = ({ nft }: { nft: NFT }) => {
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden transition-transform hover:scale-105">
       <div className="relative h-48">

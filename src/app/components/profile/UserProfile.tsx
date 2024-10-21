@@ -10,21 +10,31 @@ import {
   Badge,
   Address,
 } from "@coinbase/onchainkit/identity";
+// src/app/components/profile/UserProfile.tsx
 import ClientLayout from "../../ClientLayout";
 import { becomeCreator } from "../../utils/profileUtils";
-import { UserProfile as UserProfileType } from "../../types/UserProfile";
+// Removed the import for UserProfileType due to the error
 import { FaBell, FaFire, FaUser, FaEthereum } from "react-icons/fa";
 import Image from "next/image";
 
-interface UserProfileProps {
-  profile: UserProfileType;
-  onBecomeCreator: () => void;
+// Add this interface definition above the UserProfileProps interface
+interface UserProfileType {
+  username: string;
+  address: string;
+  avatarUrl?: string;
+  bio?: string;
+  joinDate?: number;
+  isCreator: boolean;
+  flaresSent?: number;
+  baseEthSpent?: number;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({
-  profile,
-  onBecomeCreator,
-}) => {
+interface UserProfileProps {
+  profile: UserProfileType;
+  children?: React.ReactNode;
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ profile, children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const router = useRouter();
@@ -76,7 +86,6 @@ const UserProfile: React.FC<UserProfileProps> = ({
     setIsLoading(true);
     try {
       await becomeCreator(profile.address);
-      onBecomeCreator();
       // After becoming a creator, navigate to the creator page
       router.push("/creator");
     } catch (error) {
@@ -92,7 +101,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
     <ClientLayout>
       <div className="container mx-auto px-4 py-8 bg-black text-white">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">{profile.username}'s Profile</h1>
+          <h1 className="text-3xl font-bold">{profile.username} Profile</h1>
           <button
             onClick={handleCreatorAction}
             className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-colors"
@@ -183,7 +192,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
               ))}
             </div>
           ) : (
-            <p>You haven't added any favorite creators yet.</p>
+            <p>You haven not added any favorite creators yet.</p>
           )}
         </div>
 
@@ -229,12 +238,23 @@ const UserProfile: React.FC<UserProfileProps> = ({
             </div>
           </div>
         )}
+        {children}
       </div>
     </ClientLayout>
   );
 };
 
-const DashboardCard = ({ icon, label, value }) => (
+interface DashboardCardProps {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+}
+
+const DashboardCard: React.FC<DashboardCardProps> = ({
+  icon,
+  label,
+  value,
+}) => (
   <div className="bg-gray-700 p-4 rounded-lg flex items-center">
     <div className="text-orange-500 text-2xl mr-4">{icon}</div>
     <div>

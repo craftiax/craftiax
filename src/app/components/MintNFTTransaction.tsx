@@ -32,7 +32,7 @@ const MintNFTTransaction: React.FC<MintNFTTransactionProps> = ({
           stateMutability: "nonpayable",
           type: "function",
         },
-      ],
+      ] as const,
       functionName: "safeMint",
       args: [address, metadataUrl],
     },
@@ -40,7 +40,7 @@ const MintNFTTransaction: React.FC<MintNFTTransactionProps> = ({
 
   return (
     <Transaction chainId={BASE_SEPOLIA_CHAIN_ID} contracts={contracts}>
-      <TransactionButton>Mint NFT</TransactionButton>
+      <TransactionButton></TransactionButton>
       <TransactionStatus>
         <TransactionStatusLabel />
         <TransactionStatusAction />

@@ -1,7 +1,21 @@
 import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";
 
-const CreatorHeader = ({ creator, children }) => (
+interface Creator {
+  name: string;
+  bannerImage: string;
+  profileImage: string;
+  isVerified: boolean;
+  tagline: string;
+}
+
+const CreatorHeader = ({
+  creator,
+  children,
+}: {
+  creator: Creator;
+  children: React.ReactNode;
+}) => (
   <div className="relative h-80">
     <Image
       src={creator.bannerImage}

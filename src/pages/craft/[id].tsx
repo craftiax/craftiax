@@ -51,7 +51,7 @@ const CraftDetailPage: React.FC = () => {
             <div className="border-t pt-6">
               <h2 className="text-2xl font-semibold mb-4">Comments</h2>
               <div className="space-y-4">
-                {craftData.comments.map((comment: any) => (
+                {craftData.comments.map((comment: Comment) => (
                   <div key={comment.id} className="bg-gray-100 p-4 rounded-lg">
                     <p className="font-semibold">{comment.author}</p>
                     <p className="text-gray-700">{comment.content}</p>
@@ -77,3 +77,10 @@ const CraftDetailPage: React.FC = () => {
 };
 
 export default CraftDetailPage;
+
+interface Comment {
+  id: string;
+  author: string;
+  content: string;
+  createdAt: string;
+}

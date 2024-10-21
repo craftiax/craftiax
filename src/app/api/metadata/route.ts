@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
         name: `${metadata.name} Metadata`,
       },
     };
-    const uploadData = await pinata.upload.json(metadata, options);
+    const uploadData = await pinata.upload.json(metadata);
     const ipfsHash = uploadData.IpfsHash;
     return NextResponse.json({ ipfsHash }, { status: 200 });
   } catch (e) {

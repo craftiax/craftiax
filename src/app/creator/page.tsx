@@ -10,15 +10,20 @@ import Gallery from "../components/creator/Gallery";
 import About from "../components/creator/About";
 import Collections from "../components/creator/Collections";
 import FlareActivity from "../components/creator/FlareActivity";
-import Sidebar from "../components/creator/Sidebar";
+import Sidebar, { SidebarProps } from "../components/creator/Sidebar";
+import { CreatorData } from "../components/creator/types";
 
-const CreatorProfile = ({ params }) => {
+type Params = {
+  username: string;
+};
+
+const CreatorProfile = ({ params }: { params: Params }) => {
   const [activeTab, setActiveTab] = useState("gallery");
   const { username } = params;
   const router = useRouter();
 
   // Updated dummy creator data
-  const creatorData = {
+  const creatorData: CreatorData = {
     name: "Pixel Master",
     username: username,
     tagline: "Creating digital wonders, one pixel at a time",
@@ -45,21 +50,21 @@ const CreatorProfile = ({ params }) => {
         title: "Cosmic Dreams",
         image: "/nft1.jpeg",
         flaresReceived: 42,
-        usdcReceived: 250,
+        totalUSDC: 250,
       },
       {
         id: 2,
         title: "Digital Oasis",
         image: "/nft2.jpg",
         flaresReceived: 28,
-        usdcReceived: 180,
+        totalUSDC: 180,
       },
       {
         id: 3,
         title: "Neon Nights",
         image: "/nft3.jpg",
         flaresReceived: 35,
-        usdcReceived: 210,
+        totalUSDC: 210,
       },
     ],
     collections: [

@@ -9,12 +9,24 @@ import About from "../creator/About";
 import Collections from "../creator/Collections";
 import FlareActivity from "../creator/FlareActivity";
 import Sidebar from "../creator/Sidebar";
-import { UserProfile as UserProfileType } from "../../types/UserProfile";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 interface CreatorProfileProps {
-  profile: UserProfileType;
+  profile: {
+    username: string;
+    avatarUrl?: string;
+    bio?: string;
+    creatorSince?: number;
+    craftsUploaded: number;
+    nfts: Array<{
+      id: string;
+      image: string;
+      title: string;
+      flares: Array<{ usdcAmount: number }>;
+    }>;
+  };
 }
 
 const CreatorProfile: React.FC<CreatorProfileProps> = ({ profile }) => {
@@ -22,16 +34,24 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ profile }) => {
 
   const nftsWithTotalUSDC = profile.nfts.map((nft) => ({
     ...nft,
-    totalUSDC: nft.flares.reduce((total, flare) => total + flare.usdcAmount, 0),
+    totalUSDC: nft.flares.reduce(
+      (total: number, flare: { usdcAmount: number }) =>
+        total + flare.usdcAmount,
+      0
+    ),
   }));
 
-  const Gallery = ({ nfts }) => (
+  const Gallery: React.FC<{
+    nfts: Array<(typeof nftsWithTotalUSDC)[number]>;
+  }> = ({ nfts }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {nfts.map((nft) => (
         <div key={nft.id} className="bg-gray-800 rounded-lg overflow-hidden">
-          <img
+          <Image
             src={nft.image}
             alt={nft.title}
+            width={300}
+            height={192}
             className="w-full h-48 object-cover"
           />
           <div className="p-4">
@@ -50,13 +70,15 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ profile }) => {
   return (
     <div className="max-w-4xl mx-auto p-8">
       <h1 className="text-3xl font-bold mb-6">
-        {profile.username}'s Creator Profile
+        {profile.username} Creator Profile
       </h1>
       <div className="bg-gray-800 rounded-lg p-6 mb-8">
-        <img
+        <Image
           src={profile.avatarUrl || "/default-avatar.png"}
           alt={profile.username}
-          className="w-24 h-24 rounded-full mb-4"
+          width={96}
+          height={96}
+          className="w-24 h-24 rounded-full mb-4 object-cover"
         />
         <p className="text-lg mb-2">{profile.bio || "No bio yet"}</p>
         <p className="text-sm text-gray-400">
@@ -72,7 +94,7 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ profile }) => {
         <h2 className="text-2xl font-bold mb-4">Your Crafts</h2>
         {profile.craftsUploaded === 0 ? (
           <div>
-            <p>You haven't uploaded any crafts yet. Let's get started!</p>
+            <p>You have not uploaded any crafts yet. Let us get started!</p>
             <div className="flex justify-between mt-4">
               <button className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition-colors">
                 Upload Your First Craft

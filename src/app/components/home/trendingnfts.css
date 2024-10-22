@@ -1,0 +1,61 @@
+/* Custom styles for the Slick carousel */
+.mobile-slider .slick-slide {
+  padding: 0 10px;
+}
+
+.mobile-slider .slick-list {
+  margin: 0 -10px;
+}
+
+.mobile-slider .slick-dots {
+  bottom: -30px;
+}
+
+.mobile-slider .slick-dots li button:before {
+  color: white;
+}
+
+.mobile-slider .slick-dots li.slick-active button:before {
+  color: orange;
+}
+
+/* NFT item styles */
+.nft-item {
+  aspect-ratio: 1 / 1;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+.nft-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ensure proper sizing for mobile slider */
+@media (max-width: 767px) {
+  .mobile-slider .slick-slide > div {
+    height: 100%;
+  }
+  
+  .mobile-slider .nft-item {
+    height: auto;
+    max-width: 240px; /* Increased from 200px to 300px */
+    width: 90vw; /* This ensures the image takes up 90% of the viewport width */
+    max-height: 90vw; /* This maintains the aspect ratio */
+  }
+
+  .mobile-slider {
+    margin: 0 auto;
+    max-width: 90vw; /* This ensures the slider doesn't exceed the viewport width */
+  }
+}
+
+/* Grid layout adjustments */
+@media (min-width: 768px) {
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+}

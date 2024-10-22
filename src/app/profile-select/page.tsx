@@ -34,17 +34,16 @@ const ProfileSelectPage = () => {
 
   const handleProfileSelection = (type: string) => {
     console.log("Profile selected:", type);
-    updateProfileType(type, () => {
-      console.log(
-        "Profile type updated, redirecting to:",
-        type === "creator" ? "/creator" : `/explorer/${address}`
-      );
-      if (type === "creator") {
-        router.push("/creator");
-      } else {
-        router.push(`/explorer/${address}`);
-      }
-    });
+    updateProfileType(type);
+    console.log(
+      "Profile type updated, redirecting to:",
+      type === "creator" ? "/creator" : `/explorer/${address}`
+    );
+    if (type === "creator") {
+      router.push("/creator");
+    } else {
+      router.push(`/explorer/${address}`);
+    }
   };
 
   if (isLoading) {

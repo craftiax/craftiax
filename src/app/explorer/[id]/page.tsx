@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
-import UserProfile from "../../components/profile/UserProfile";
 import CreatorProfile from "../../components/profile/CreatorProfile";
 import { getUserProfile } from "../../utils/profileUtils";
 import { useProfile } from "../../hooks/useProfile";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import UserProfile from "../../components/profile/UserProfile";
 
 interface Flare {
   id: string;
@@ -62,7 +62,7 @@ const ExplorerPage = () => {
         try {
           console.log("Fetching user profile for", explorerId);
           const profile = await getUserProfile(explorerId);
-          setUserProfile(profile);
+          setUserProfile({ ...profile, nfts: [] });
         } catch (error) {
           console.error("Error fetching user profile:", error);
         }

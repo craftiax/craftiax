@@ -5,10 +5,24 @@ import { useState, useEffect } from "react";
 import { getNFTFlareDetails } from "../../../utils/nftUtils";
 import Header from "../../components/layout/header";
 import Footer from "../../components/layout/footer";
+
+interface FlareDetail {
+  user: string;
+  flareAmount: string;
+  usdcAmount: string;
+  date: Date;
+  comment?: string; // Add this line with optional property
+}
+
+interface FlareDetails {
+  totalUSDC: string;
+  flares: FlareDetail[];
+}
+
 const FlareDetailsPage = () => {
   const params = useParams();
-  const id = params.id as string;
-  const [flareDetails, setFlareDetails] = useState(null);
+  const id = params?.id as string;
+  const [flareDetails, setFlareDetails] = useState<FlareDetails | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -49,8 +63,7 @@ const FlareDetailsPage = () => {
             <tbody>
               {flareDetails.flares.map((flare, index) => (
                 <tr key={index} className="border-t border-gray-700">
-                  <td className="p-2">{flare.userId}</td>
-                  <td className="p-2">{flare.userAddress}</td>
+                  <td className="p-2">{flare.user}</td>
                   <td className="p-2">{flare.flareAmount}</td>
                   <td className="p-2">{flare.usdcAmount}</td>
                   <td className="p-2">

@@ -1,3 +1,10 @@
+interface UserProfile {
+  address: string;
+  isCreator: boolean;
+  craftsUploaded: number;
+  username: string;
+  creatorSince: Date;
+}
 
 // This is a mock implementation. Replace with actual API calls or blockchain interactions.
 const mockProfiles: { [key: string]: UserProfile } = {};
@@ -26,4 +33,3 @@ export const becomeCreator = async (address: string): Promise<UserProfile> => {
   };
   return mockProfiles[address];
 };
-

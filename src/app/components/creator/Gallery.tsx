@@ -1,7 +1,7 @@
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { FaFire } from "react-icons/fa";
-import SendFlareTransaction from "./SendFlareTransaction";
+import { FaFire, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Link from "next/link";
 
 interface NFT {
@@ -13,6 +13,19 @@ interface NFT {
 }
 
 const Gallery = ({ nfts }: { nfts: NFT[] }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Mock data with added USDC totals
   const mockNfts = [
     {
@@ -59,19 +72,52 @@ const Gallery = ({ nfts }: { nfts: NFT[] }) => {
     },
   ];
 
+  const totalPages = Math.ceil(mockNfts.length / itemsPerPage);
+  const paginatedNfts = isMobile
+    ? mockNfts.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
+    : mockNfts;
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {mockNfts.map((nft) => (
-        <NFTCard key={nft.id} nft={nft} />
-      ))}
+    <div>
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {paginatedNfts.map((nft) => (
+          <NFTCard key={nft.id} nft={nft} isMobile={isMobile} />
+        ))}
+      </div>
+      {isMobile && totalPages > 1 && (
+        <div className="flex justify-center items-center mt-4">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="mr-2 p-2 bg-gray-700 rounded-full disabled:opacity-50"
+          >
+            <FaChevronLeft className="text-white" />
+          </button>
+          <span className="text-white">
+            {currentPage} / {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="ml-2 p-2 bg-gray-700 rounded-full disabled:opacity-50"
+          >
+            <FaChevronRight className="text-white" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
-const NFTCard = ({ nft }: { nft: NFT }) => {
+const NFTCard = ({ nft, isMobile }: { nft: NFT; isMobile: boolean }) => {
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden transition-transform hover:scale-105">
-      <div className="relative h-48">
+      <div className={`relative ${isMobile ? "h-32" : "h-48"}`}>
         <Image
           src={nft.image}
           alt={nft.title}
@@ -79,14 +125,22 @@ const NFTCard = ({ nft }: { nft: NFT }) => {
           objectFit="cover"
         />
       </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2">{nft.title}</h3>
-        <div className="flex items-center text-orange-500 mb-2">
-          <FaFire className="mr-2" />
+      <div className="p-2 sm:p-4">
+        <h3
+          className={`font-semibold mb-1 sm:mb-2 ${isMobile ? "text-xs" : "text-lg"}`}
+        >
+          {nft.title}
+        </h3>
+        <div
+          className={`flex items-center text-orange-500 mb-1 sm:mb-2 ${isMobile ? "text-xs" : "text-sm"}`}
+        >
+          <FaFire className="mr-1 sm:mr-2" />
           <span>{nft.flaresReceived} flares</span>
         </div>
         <Link href={`/flare-details/${nft.id}`}>
-          <button className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition-colors">
+          <button
+            className={`w-full bg-orange-500 text-white py-1 sm:py-2 rounded-md hover:bg-orange-600 transition-colors ${isMobile ? "text-xs" : "text-sm"}`}
+          >
             ${nft.totalUSDC} USDC Received
           </button>
         </Link>

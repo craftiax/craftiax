@@ -17,22 +17,22 @@ interface AboutProps {
 const About: React.FC<AboutProps> = ({ creator }) => {
   return (
     <div className="bg-gray-800 rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-4">About PixelMaster</h2>
-      <p className="text-gray-300 mb-6">{creator.bio}</p>
+      <h2 className="text-xl sm:text-2xl font-bold mb-4">About PixelMaster</h2>
+      <p className="text-sm sm:text-base text-gray-300 mb-6">{creator.bio}</p>
 
-      <h3 className="text-xl font-semibold mb-3">Skills</h3>
+      <h3 className="text-lg sm:text-xl font-semibold mb-3">Skills</h3>
       <div className="flex flex-wrap gap-2 mb-6">
         {creator.skills.map((skill, index) => (
           <span
             key={index}
-            className="bg-gray-700 text-orange-400 px-3 py-1 rounded-full text-sm"
+            className="bg-gray-700 text-orange-400 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm"
           >
             {skill}
           </span>
         ))}
       </div>
 
-      <h3 className="text-xl font-semibold mb-3">Connect</h3>
+      <h3 className="text-lg sm:text-xl font-semibold mb-3">Connect</h3>
       <div className="flex space-x-4">
         <a
           href={creator.socialLinks.twitter}

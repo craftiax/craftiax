@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ClientLayout from "../ClientLayout";
 import CreatorHeader from "../components/creator/CreatorHeader";
@@ -21,6 +21,14 @@ const CreatorProfile = ({ params }: { params: Params }) => {
   const [activeTab, setActiveTab] = useState("gallery");
   const { username } = params;
   const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Updated dummy creator data
   const creatorData: CreatorData = {
@@ -110,7 +118,7 @@ const CreatorProfile = ({ params }: { params: Params }) => {
   };
 
   const handleUploadCraft = () => {
-    router.push("/upload-craft"); // Adjust this route as needed
+    router.push("/upload-craft");
   };
 
   return (
@@ -119,7 +127,7 @@ const CreatorProfile = ({ params }: { params: Params }) => {
         <CreatorHeader creator={creatorData}>
           <button
             onClick={handleUploadCraft}
-            className="group relative inline-flex items-center overflow-hidden rounded px-8 py-3 bg-orange-500 bg-opacity-20 text-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+            className="group relative inline-flex items-center overflow-hidden rounded px-4 py-2 bg-orange-500 bg-opacity-20 text-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:ring-offset-gray-900 text-sm md:text-base"
           >
             <span className="absolute left-0 -translate-x-full transition-transform group-hover:translate-x-4">
               <svg
@@ -147,11 +155,14 @@ const CreatorProfile = ({ params }: { params: Params }) => {
             Joined: {new Date(creatorData.joinDate).toLocaleDateString()}
           </div>
           <QuickStats stats={creatorData.stats} />
-          <div className="flex flex-col lg:flex-row mt-8 gap-8">
-            <div className="lg:w-3/4">
+          <div
+            className={`flex ${isMobile ? "flex-col" : "flex-row"} mt-8 gap-8`}
+          >
+            <div className={isMobile ? "w-full" : "w-3/4"}>
               <NavigationTabs
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
+                isMobile={isMobile}
               />
               <div className="mt-6">
                 {activeTab === "gallery" && <Gallery nfts={creatorData.nfts} />}
@@ -164,7 +175,7 @@ const CreatorProfile = ({ params }: { params: Params }) => {
                 )}
               </div>
             </div>
-            <Sidebar creator={creatorData} />
+            {!isMobile && <Sidebar creator={creatorData} />}
           </div>
         </div>
       </div>

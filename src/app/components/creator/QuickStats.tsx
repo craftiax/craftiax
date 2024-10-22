@@ -31,10 +31,10 @@ const StatCard = ({
   value: string | number;
 }) => (
   <div className="bg-gray-800 rounded-lg p-4 flex items-center">
-    <div className="text-2xl text-orange-500 mr-4">{icon}</div>
+    <div className="text-xl sm:text-2xl text-orange-500 mr-4">{icon}</div>
     <div>
-      <div className="text-sm text-gray-400">{label}</div>
-      <div className="text-xl font-bold">{value}</div>
+      <div className="text-xs sm:text-sm text-gray-400">{label}</div>
+      <div className="text-sm sm:text-xl font-bold">{value}</div>
     </div>
   </div>
 );

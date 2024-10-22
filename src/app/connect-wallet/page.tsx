@@ -6,6 +6,7 @@ import ClientLayout from "../ClientLayout";
 import { FaWallet, FaEthereum, FaEllipsisH } from "react-icons/fa";
 import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 import CoinbaseLogo from "../components/icons/coinbaseLogo";
+import { WalletComponents } from "../components/WalletComponents";
 
 const ConnectWalletPage = () => {
   return (
@@ -23,7 +24,9 @@ const ConnectWalletPage = () => {
           </div>
 
           <div className="bg-gray-800 rounded-xl shadow-2xl p-6 sm:p-8 space-y-6 sm:space-y-8">
-            <ConnectWallet className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-sm sm:text-lg transition duration-300 ease-in-out transform hover:scale-105" />
+            <div className="w-full   text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-sm sm:text-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center">
+              <WalletComponents />
+            </div>
 
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
               <WalletOption
@@ -53,7 +56,7 @@ const ConnectWalletPage = () => {
           </div>
 
           <p className="text-center text-xs sm:text-sm text-gray-400">
-            By connecting a wallet, you agree to Craftiax's{" "}
+            By connecting a wallet, you agree to Craftiax&apos;s{" "}
             <a
               href="#"
               className="text-orange-500 hover:text-orange-400 underline"

@@ -94,36 +94,38 @@ const ExplorerPage = () => {
   }
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white">
+    <div className="bg-gradient-to-b from-gray-900 to-gray-800 min-h-screen text-white">
       {userProfile.isCreator ? (
         <CreatorProfile profile={userProfile} />
       ) : (
         <UserProfile profile={userProfile}>
           {/* Banner Image */}
-          <div className="relative w-full h-64 mb-8">
+          <div className="relative w-full h-80 mb-16">
             <Image
-              src={userProfile.bannerUrl || "/creator-banner.png"}
-              alt="Profile Banner"
+              src={userProfile.bannerUrl || "/default-banner.jpg"}
+              alt={userProfile.bannerUrl ? "Profile Banner" : "Default Banner"}
               layout="fill"
               objectFit="cover"
-              className="rounded-t-lg"
+              className="rounded-b-3xl"
             />
-            <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-gray-900 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
           </div>
 
           {/* Profile Summary */}
-          <div className="relative px-6 mb-8">
-            <div className="flex items-end -mt-20">
+          <div className="relative px-6 mb-12">
+            <div className="flex flex-col md:flex-row items-center md:items-end -mt-32 md:-mt-24">
               <Image
                 src={userProfile.avatarUrl || "/default-avatar.png"}
                 alt={userProfile.username}
-                width={150}
-                height={150}
-                className="rounded-full border-4 border-purple-500"
+                width={180}
+                height={180}
+                className="rounded-full border-4 border-purple-500 shadow-lg mb-4 md:mb-0"
               />
-              <div className="ml-6 pb-4">
-                <h1 className="text-4xl font-bold">{userProfile.username}</h1>
-                <p className="text-lg text-gray-300">
+              <div className="md:ml-8 text-center md:text-left">
+                <h1 className="text-4xl md:text-5xl font-bold">
+                  {userProfile.username}
+                </h1>
+                <p className="text-xl text-purple-300">
                   @{userProfile.handle || userProfile.username.toLowerCase()}
                 </p>
               </div>
@@ -131,67 +133,47 @@ const ExplorerPage = () => {
           </div>
 
           {/* Dashboard Content */}
-          <div className="bg-gray-800 rounded-lg p-6 mb-8 shadow-lg">
-            <h2 className="text-2xl font-bold mb-4 text-purple-400">
-              About {userProfile.username}
-            </h2>
-            <p className="text-lg mb-4 italic text-gray-300">
-              &ldquo;
-              {userProfile.bio || "Crafting the future, one NFT at a time"}
-              &rdquo;
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div>
-                <p className="text-purple-300">Joined</p>
-                <p>
-                  {new Date(
-                    userProfile.joinDate || Date.now()
-                  ).toLocaleDateString()}
-                </p>
-              </div>
-              <div>
-                <p className="text-purple-300">Favorite Artist</p>
-                <p>{userProfile.favoriteArtist || "Exploring new talents"}</p>
-              </div>
-              <div>
-                <p className="text-purple-300">NFTs Collected</p>
-                <p>{userProfile.nftsCollected || 0}</p>
-              </div>
-              <div>
-                <p className="text-purple-300">Flares Sent</p>
-                <p>{userProfile.flaresSent || 0}</p>
-              </div>
-            </div>
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold mb-2 text-purple-400">
-                Interests
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {userProfile.interests
-                  ? userProfile.interests.map(
-                      (interest: string, index: number) => (
-                        <span
-                          key={index}
-                          className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm"
-                        >
-                          {interest}
-                        </span>
-                      )
-                    )
-                  : ["Digital Art", "Collectibles", "Virtual Worlds"].map(
-                      (interest, index) => (
-                        <span
-                          key={index}
-                          className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm"
-                        >
-                          {interest}
-                        </span>
-                      )
-                    )}
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="bg-gray-800 rounded-2xl p-8 mb-12 shadow-xl">
+              <h2 className="text-3xl font-bold mb-6 text-purple-400">
+                About {userProfile.username}
+              </h2>
+              <p className="text-xl mb-8 italic text-gray-300">
+                &ldquo;
+                {userProfile.bio || "Crafting the future, one NFT at a time"}
+                &rdquo;
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-lg">
+                <div className="bg-gray-700 p-4 rounded-xl">
+                  <p className="text-purple-300 font-semibold mb-2">Joined</p>
+                  <p>
+                    {new Date(
+                      userProfile.joinDate || Date.now()
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="bg-gray-700 p-4 rounded-xl">
+                  <p className="text-purple-300 font-semibold mb-2">
+                    Favorite Artist
+                  </p>
+                  <p>{userProfile.favoriteArtist || "Exploring new talents"}</p>
+                </div>
+                <div className="bg-gray-700 p-4 rounded-xl">
+                  <p className="text-purple-300 font-semibold mb-2">
+                    NFTs Collected
+                  </p>
+                  <p>{userProfile.nftsCollected || 0}</p>
+                </div>
+                <div className="bg-gray-700 p-4 rounded-xl">
+                  <p className="text-purple-300 font-semibold mb-2">
+                    Flares Sent
+                  </p>
+                  <p>{userProfile.flaresSent || 0}</p>
+                </div>
               </div>
             </div>
+            {/* Add more sections here for NFTs, interests, etc. */}
           </div>
-          {/* ... rest of the UserProfile component ... */}
         </UserProfile>
       )}
     </div>

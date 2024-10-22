@@ -97,54 +97,71 @@ const UserProfile: React.FC<UserProfileProps> = ({ profile, children }) => {
     }
   };
 
+  // Dummy bio
+  const dummyBio =
+    "Web3 enthusiast, NFT Lover, and aspiring digital artist. Exploring the frontiers of decentralized technology and creative expression.";
+
   return (
     <ClientLayout>
-      <div className="container mx-auto px-4 py-8 bg-black text-white">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">{profile.username} Profile</h1>
+      <div className="container mx-auto px-4 py-8 bg-gradient-to-b from-gray-900 to-black text-white">
+        {/* Banner Image */}
+        <div className="relative h-48 mb-8 rounded-lg overflow-hidden">
+          <Image
+            src="/banner.jpg"
+            alt="Profile Banner"
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+          <div className="flex items-center mb-4 md:mb-0">
+            <Image
+              src="/ava.jpeg"
+              alt={profile.username}
+              width={96}
+              height={96}
+              className="rounded-full mr-6 border-4 border-orange-500"
+            />
+            <div>
+              <h1 className="text-2xl sm:text-4xl font-bold">
+                {profile.username}
+              </h1>
+              <p className="text-sm sm:text-base text-gray-400">{dummyBio}</p>
+            </div>
+          </div>
           <button
             onClick={handleCreatorAction}
-            className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600 transition-colors"
+            className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:from-orange-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
           >
             {profile.isCreator ? "Go to Creator Dashboard" : "Become a Creator"}
           </button>
         </div>
 
-        {/* User Info */}
-        <div className="bg-gray-800 rounded-lg p-6 mb-8">
-          <img
-            src={profile.avatarUrl || "/default-avatar.png"}
-            alt={profile.username}
-            className="w-24 h-24 rounded-full mb-4"
-          />
-          <p className="text-lg mb-2">{profile.bio || "No bio yet"}</p>
-          <p className="text-sm text-gray-400">
-            Joined:{" "}
-            {new Date(profile.joinDate || Date.now()).toLocaleDateString()}
-          </p>
-        </div>
-
         {/* User Dashboard */}
-        <div className="bg-gray-800 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">Your Dashboard</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-gray-800 rounded-lg p-4 sm:p-6 mb-8 shadow-lg">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 border-b border-gray-700 pb-2">
+            Your Dashboard
+          </h2>
+          <div className="grid grid-cols-2 gap-3 sm:gap-6">
             <DashboardCard
-              icon={<FaFire />}
+              icon={<FaFire className="text-2xl sm:text-3xl" />}
               label="Flares Sent"
               value={profile.flaresSent || 0}
             />
             <DashboardCard
-              icon={<FaEthereum />}
+              icon={<FaEthereum className="text-2xl sm:text-3xl" />}
               label="Base ETH Spent"
               value={`${profile.baseEthSpent || 0} ETH`}
             />
             <DashboardCard
-              icon={<FaUser />}
+              icon={<FaUser className="text-2xl sm:text-3xl" />}
               label="Favorite Creators"
               value={favoriteCreators.length}
             />
             <DashboardCard
-              icon={<FaBell />}
+              icon={<FaBell className="text-2xl sm:text-3xl" />}
               label="Notifications"
               value={notifications.length}
             />
@@ -152,60 +169,73 @@ const UserProfile: React.FC<UserProfileProps> = ({ profile, children }) => {
         </div>
 
         {/* Flare Activity */}
-        <div className="bg-gray-800 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">Your Flare Activity</h2>
+        <div className="bg-gray-800 rounded-lg p-4 sm:p-6 mb-8 shadow-lg">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 border-b border-gray-700 pb-2">
+            Your Flare Activity
+          </h2>
           {flareActivities.length > 0 ? (
             <ul className="space-y-4">
               {flareActivities.map((activity) => (
-                <li key={activity.id} className="bg-gray-700 p-4 rounded-lg">
-                  <p className="text-orange-400">{activity.action}</p>
-                  <p className="text-sm text-gray-400">
+                <li
+                  key={activity.id}
+                  className="bg-gray-700 p-3 sm:p-4 rounded-lg hover:bg-gray-600 transition-colors duration-200"
+                >
+                  <p className="text-orange-400 font-semibold text-sm sm:text-base">
+                    {activity.action}
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-400 mt-1">
                     {new Date(activity.timestamp).toLocaleString()}
                   </p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No flare activity yet.</p>
+            <p className="text-sm sm:text-base">No flare activity yet.</p>
           )}
         </div>
 
         {/* Favorite Creators */}
-        <div className="bg-gray-800 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">Your Favorite Creators</h2>
+        <div className="bg-gray-800 rounded-lg p-4 sm:p-6 mb-8 shadow-lg">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 border-b border-gray-700 pb-2">
+            Your Favorite Creators
+          </h2>
           {favoriteCreators.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {favoriteCreators.map((creator) => (
                 <div
                   key={creator.id}
-                  className="bg-gray-700 p-4 rounded-lg flex items-center"
+                  className="bg-gray-700 p-3 sm:p-4 rounded-lg flex items-center hover:bg-gray-600 transition-colors duration-200"
                 >
                   <Image
                     src={creator.avatarUrl || "/default-avatar.png"}
                     alt={creator.name}
-                    width={48}
-                    height={48}
-                    className="rounded-full mr-4"
+                    width={40}
+                    height={40}
+                    className="rounded-full mr-3 sm:mr-4"
                   />
-                  <p className="text-lg">{creator.name}</p>
+                  <p className="text-sm sm:text-lg font-semibold">
+                    {creator.name}
+                  </p>
                 </div>
               ))}
             </div>
           ) : (
-            <p>You haven not added any favorite creators yet.</p>
+            <p className="text-sm sm:text-base">
+              You haven&apos;t added any favorite creators yet.
+            </p>
           )}
         </div>
 
         {/* Become a Creator CTA */}
         {!profile.isCreator && (
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h2 className="text-2xl font-bold mb-4">
+          <div className="bg-gray-800 rounded-lg p-4 sm:p-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4">
               Ready to share your crafts?
             </h2>
             <button
               onClick={handleConfirmBecomeCreator}
               disabled={isLoading}
-              className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition-colors disabled:bg-gray-500"
+              className="bg-orange-500 text-white px-4 sm:px-6 py-2 rounded-full hover:bg-orange-600 transition-colors disabled:bg-gray-500 text-sm sm:text-base"
             >
               {isLoading ? "Processing..." : "Become a Creator"}
             </button>
@@ -238,7 +268,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ profile, children }) => {
             </div>
           </div>
         )}
-        {children}
       </div>
     </ClientLayout>
   );
@@ -255,11 +284,11 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   label,
   value,
 }) => (
-  <div className="bg-gray-700 p-4 rounded-lg flex items-center">
-    <div className="text-orange-500 text-2xl mr-4">{icon}</div>
+  <div className="bg-gray-700 p-3 sm:p-6 rounded-lg flex items-center hover:bg-gray-600 transition-colors duration-200">
+    <div className="text-orange-500 mr-3 sm:mr-4">{icon}</div>
     <div>
-      <p className="text-sm text-gray-400">{label}</p>
-      <p className="text-xl font-bold">{value}</p>
+      <p className="text-xs sm:text-sm text-gray-400 mb-1">{label}</p>
+      <p className="text-lg sm:text-2xl font-bold">{value}</p>
     </div>
   </div>
 );

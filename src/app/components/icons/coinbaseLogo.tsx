@@ -1,5 +1,12 @@
-const CoinbaseLogo = () => (
-  <svg width="48" height="48" viewBox="0 0 1024 1024" fill="none">
+import { SVGProps } from "react";
+
+const CoinbaseLogo = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    {...props}
+    viewBox="0 0 1024 1024"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <rect width="1024" height="1024" fill="#0052FF" />
     <path
       fillRule="evenodd"

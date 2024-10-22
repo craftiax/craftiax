@@ -25,29 +25,28 @@ const ConnectWalletPage = () => {
           <div className="bg-gray-800 rounded-xl shadow-2xl p-6 sm:p-8 space-y-6 sm:space-y-8">
             <ConnectWallet className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg text-sm sm:text-lg transition duration-300 ease-in-out transform hover:scale-105" />
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-              <WalletOption icon={<CoinbaseLogo />} name="Coinbase" />
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+              <WalletOption
+                icon={<CoinbaseLogo className="w-6 h-6" />}
+                name="Coinbase"
+              />
               <WalletOption
                 icon={
                   <Image
                     src="/metamask.svg"
                     alt="MetaMask"
-                    width={40}
-                    height={40}
+                    width={24}
+                    height={24}
                   />
                 }
                 name="MetaMask"
               />
               <WalletOption
-                icon={
-                  <FaEthereum className="text-4xl sm:text-5xl text-blue-500" />
-                }
+                icon={<FaEthereum className="text-2xl text-blue-500" />}
                 name="Ethereum"
               />
               <WalletOption
-                icon={
-                  <FaEllipsisH className="text-3xl sm:text-4xl text-gray-400" />
-                }
+                icon={<FaEllipsisH className="text-xl text-gray-400" />}
                 name="Lots More"
               />
             </div>
@@ -83,9 +82,11 @@ const WalletOption = ({
   icon: React.ReactNode;
   name: string;
 }) => (
-  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
-    <div className="bg-gray-700 p-2 sm:p-4 rounded-full">{icon}</div>
-    <span className="text-xs sm:text-sm font-medium text-gray-300">{name}</span>
+  <div className="flex flex-col items-center space-y-1">
+    <div className="bg-gray-700 p-2 rounded-full w-10 h-10 flex items-center justify-center">
+      {icon}
+    </div>
+    <span className="text-xs font-medium text-gray-300">{name}</span>
   </div>
 );
 

@@ -7,6 +7,7 @@ import Sidebar from "../components/layout/Sidebar";
 import Header from "../components/layout/header";
 import Footer from "../components/layout/footer";
 import { useState, useEffect } from "react";
+import { dummyCrafts } from "../data/dummyCrafts"; // Import the dummy data
 
 const CraftflarePage = () => {
   const [isMobile, setIsMobile] = useState(false);

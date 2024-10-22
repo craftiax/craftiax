@@ -1,0 +1,32 @@
+/* Custom styles for the Slick carousel */
+.mobile-slider .slick-slide {
+  padding: 0 10px;
+}
+
+.mobile-slider .slick-list {
+  margin: 0 -10px;
+}
+
+.mobile-slider .slick-dots {
+  bottom: -30px;
+}
+
+.mobile-slider .slick-dots li button:before {
+  color: white;
+}
+
+.mobile-slider .slick-dots li.slick-active button:before {
+  color: orange;
+}
+
+/* Ensure proper sizing for mobile slider */
+@media (max-width: 767px) {
+  .mobile-slider .slick-slide > div {
+    height: 100%;
+  }
+  
+  .mobile-slider {
+    margin: 0 auto;
+    max-width: 90vw;
+  }
+}

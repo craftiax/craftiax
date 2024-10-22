@@ -4,16 +4,22 @@ import React from "react";
 import Header from "./components/layout/header";
 import Footer from "./components/layout/footer";
 
-export default function ClientLayout({
-  children,
-}: {
+interface ClientLayoutProps {
   children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
-      <Header />
-      <main className="flex-grow">{children}</main>
-      <Footer />
-    </div>
-  );
+  showWalletConnect?: boolean;
 }
+
+const ClientLayout: React.FC<ClientLayoutProps> = ({
+  children,
+  showWalletConnect = true,
+}) => {
+  return (
+    <>
+      <Header showWalletConnect={showWalletConnect} />
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
+};
+
+export default ClientLayout;

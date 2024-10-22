@@ -35,12 +35,12 @@ const TrendingNFTs = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-900">
+    <section className="py-8 md:py-16 bg-gray-900">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8 text-center text-white">
+        <h2 className="text-xl md:text-3xl font-bold mb-6 md:mb-8 text-center text-white">
           Trending Today
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
           {nfts.map((nft) => (
             <div
               key={nft.id}
@@ -51,12 +51,12 @@ const TrendingNFTs = () => {
                 alt={nft.name}
                 width={300}
                 height={300}
-                className="object-cover w-full h-64 transition-transform duration-300 group-hover:scale-110"
+                className="object-cover w-full h-48 md:h-64 transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
-              <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <p className="font-semibold">{nft.name}</p>
-                <p className="text-sm">by {nft.artist}</p>
+              <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <p className="font-semibold text-xs md:text-base">{nft.name}</p>
+                <p className="text-xs md:text-sm">by {nft.artist}</p>
               </div>
             </div>
           ))}

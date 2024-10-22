@@ -1,5 +1,6 @@
 import FAQAccordion from "../components/faq/FAQAccordion";
 import ClientLayout from "../ClientLayout";
+import { FaQuestionCircle } from "react-icons/fa";
 
 const FAQPage = () => {
   const faqItems = [
@@ -32,12 +33,20 @@ const FAQPage = () => {
 
   return (
     <ClientLayout>
-      <div className="min-h-screen bg-gray-900 py-16 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-extrabold text-center text-white mb-8">
-            Frequently Asked Questions
-          </h1>
-          <FAQAccordion items={faqItems} />
+          <div className="text-center mb-8">
+            <FaQuestionCircle className="mx-auto text-5xl text-orange-500 mb-4" />
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+              Frequently Asked Questions
+            </h1>
+            <p className="text-sm sm:text-base text-gray-400">
+              Find answers to common questions about Craftiax
+            </p>
+          </div>
+          <div className="bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
+            <FAQAccordion items={faqItems} />
+          </div>
         </div>
       </div>
     </ClientLayout>

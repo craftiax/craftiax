@@ -81,6 +81,19 @@ const Sidebar: React.FC<SidebarProps> = ({ creator }) => {
           ))}
         </ul>
       </div>
+      {/* Become a Regular Explorer Section */}
+      <div className="mt-8 p-4 bg-gray-800 rounded-lg max-w-md mx-auto">
+        <p className="text-sm text-gray-400 mb-4">
+          Want to experience Craftiax from a different perspective? Switch to an
+          Art Explorer profile.
+        </p>
+        <a
+          href="/profile-select?mode=explorer"
+          className="text-blue-500 hover:text-blue-600 transition-colors text-sm"
+        >
+          Switch to Art Explorer
+        </a>
+      </div>
     </div>
   );
 };

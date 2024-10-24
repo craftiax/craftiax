@@ -178,26 +178,6 @@ const CreatorProfile = ({ params }: { params: Params }) => {
             {!isMobile && <Sidebar creator={creatorData} />}
           </div>
         </div>
-
-        {/* Become a Regular Explorer Section */}
-        <div className="mt-8 p-4 bg-gray-800 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">
-            Explore as a Regular User
-          </h3>
-          <p className="text-sm text-gray-400 mb-4">
-            Want to experience Craftiax from a different perspective? Switch to
-            an Art Explorer profile.
-          </p>
-          <button
-            onClick={() => {
-              console.log("Switching to Art Explorer profile");
-              router.push("/profile-select?mode=explorer");
-            }}
-            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors text-sm"
-          >
-            Switch to Art Explorer
-          </button>
-        </div>
       </div>
     </ClientLayout>
   );

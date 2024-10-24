@@ -16,6 +16,9 @@ import { becomeCreator } from "../../utils/profileUtils";
 // Removed the import for UserProfileType due to the error
 import { FaBell, FaFire, FaUser, FaEthereum } from "react-icons/fa";
 import Image from "next/image";
+import CreatorAestheticsPage from "./CreatorAestheticsPage";
+// Add this import statement at the top of the file
+import { updateUserProfileType } from "../../utils/firebaseUtils";
 
 // Add this interface definition above the UserProfileProps interface
 interface UserProfileType {
@@ -37,6 +40,7 @@ interface UserProfileProps {
 const UserProfile: React.FC<UserProfileProps> = ({ profile, children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showAestheticsPage, setShowAestheticsPage] = useState(false);
   const router = useRouter();
 
   // Add notifications state
@@ -77,23 +81,34 @@ const UserProfile: React.FC<UserProfileProps> = ({ profile, children }) => {
       // If already a creator, navigate to the creator page
       router.push("/creator");
     } else {
-      // If not a creator, show confirmation
-      setShowConfirmation(true);
+      // If not a creator, show the aesthetics page
+      handleBecomeCreator();
     }
+  };
+
+  const handleBecomeCreator = () => {
+    setShowAestheticsPage(true);
   };
 
   const handleConfirmBecomeCreator = async () => {
     setIsLoading(true);
     try {
-      await becomeCreator(profile.address);
-      // After becoming a creator, navigate to the creator page
-      router.push("/creator");
+      const success = updateUserProfileType(profile.address, "creator");
+      if (success) {
+        const updatedProfile = await becomeCreator(profile.address);
+        if (updatedProfile.isCreator) {
+          router.push("/creator");
+        } else {
+          console.error("Failed to become a creator");
+        }
+      } else {
+        console.error("Failed to update profile type in Firebase");
+      }
     } catch (error) {
       console.error("Error becoming a creator:", error);
-      // Handle error (e.g., show error message to user)
     } finally {
       setIsLoading(false);
-      setShowConfirmation(false);
+      setShowAestheticsPage(false);
     }
   };
 
@@ -233,13 +248,20 @@ const UserProfile: React.FC<UserProfileProps> = ({ profile, children }) => {
               Ready to share your crafts?
             </h2>
             <button
-              onClick={handleConfirmBecomeCreator}
+              onClick={handleBecomeCreator}
               disabled={isLoading}
               className="bg-orange-500 text-white px-4 sm:px-6 py-2 rounded-full hover:bg-orange-600 transition-colors disabled:bg-gray-500 text-sm sm:text-base"
             >
               {isLoading ? "Processing..." : "Become a Creator"}
             </button>
           </div>
+        )}
+
+        {showAestheticsPage && (
+          <CreatorAestheticsPage
+            onConfirm={handleConfirmBecomeCreator}
+            onCancel={() => setShowAestheticsPage(false)}
+          />
         )}
 
         {showConfirmation && (

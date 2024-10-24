@@ -1,5 +1,17 @@
 import { NextResponse } from 'next/server';
-import { db } from '../../utils/firebaseAdmin';
+import admin from 'firebase-admin';
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    }),
+  });
+}
+
+const db = admin.firestore();
 
 async function createCollectionsAndDummyData() {
   const collections = [
@@ -49,13 +61,6 @@ async function createCollectionsAndDummyData() {
 }
 
 export async function GET(request: Request) {
-  if (!db) {
-    return NextResponse.json({ 
-      message: 'Firebase not initialized', 
-      error: 'Firebase admin SDK initialization failed' 
-    }, { status: 500 });
-  }
-
   const { searchParams } = new URL(request.url);
   const action = searchParams.get('action');
 

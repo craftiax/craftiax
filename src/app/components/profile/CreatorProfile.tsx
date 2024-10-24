@@ -116,6 +116,23 @@ const CreatorProfile: React.FC<CreatorProfileProps> = ({ profile }) => {
         <h2 className="text-2xl font-bold mb-4">Creator Dashboard</h2>
         {/* Add creator-specific features like analytics, earnings, etc. */}
       </div>
+
+      {/* Become a Regular Explorer Section */}
+      <div className="mt-8 p-4 bg-gray-800 rounded-lg">
+        <h3 className="text-lg font-semibold mb-2">
+          Explore as a Regular User
+        </h3>
+        <p className="text-sm text-gray-400 mb-4">
+          Want to experience Craftiax from a different perspective? Switch to an
+          Art Explorer profile.
+        </p>
+        <button
+          onClick={() => router.push("/profile-select?mode=explorer")}
+          className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors text-sm"
+        >
+          Switch to Art Explorer
+        </button>
+      </div>
     </div>
   );
 };

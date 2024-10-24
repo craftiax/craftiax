@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaEnvelope, FaHeart } from "react-icons/fa";
+import { FaEnvelope, FaHeart, FaUser } from "react-icons/fa";
+import { useAccount } from "wagmi";
+import { registerUser } from "../utils/firebaseUtils";
 
 interface UserOnboardingProps {
-  onComplete: (email: string, interests: string[]) => void;
+  onComplete: () => void;
 }
 
 const UserOnboarding: React.FC<UserOnboardingProps> = ({ onComplete }) => {
   const [email, setEmail] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
+  const [profileType, setProfileType] = useState<string>("");
   const router = useRouter();
+  const { address } = useAccount();
 
   const interestOptions = [
     "Digital Art",
@@ -29,11 +33,22 @@ const UserOnboarding: React.FC<UserOnboardingProps> = ({ onComplete }) => {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim() && interests.length > 0) {
-      onComplete(email.trim(), interests);
-      router.push("/craftflare");
+    if (email.trim() && interests.length > 0 && profileType && address) {
+      const success = await registerUser(
+        address,
+        email.trim(),
+        profileType,
+        interests
+      );
+      if (success) {
+        onComplete();
+        router.push(profileType === "creator" ? "/creator" : "/craftflare");
+      } else {
+        // Handle registration error
+        console.error("Failed to register user");
+      }
     }
   };
 
@@ -61,6 +76,36 @@ const UserOnboarding: React.FC<UserOnboardingProps> = ({ onComplete }) => {
               required
               placeholder="Enter your email"
             />
+          </div>
+          <div>
+            <label className="text-white block mb-2 text-sm sm:text-base">
+              <FaUser className="inline-block mr-2" />
+              Profile Type
+            </label>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={() => setProfileType("creator")}
+                className={`px-4 py-2 rounded-md text-sm sm:text-base font-medium ${
+                  profileType === "creator"
+                    ? "bg-orange-500 text-white"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                Creator
+              </button>
+              <button
+                type="button"
+                onClick={() => setProfileType("explorer")}
+                className={`px-4 py-2 rounded-md text-sm sm:text-base font-medium ${
+                  profileType === "explorer"
+                    ? "bg-orange-500 text-white"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                Craft Explorer
+              </button>
+            </div>
           </div>
           <div>
             <label className="text-white block mb-2 text-sm sm:text-base">

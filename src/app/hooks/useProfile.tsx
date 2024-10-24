@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
+import { getUserProfile } from "../utils/firebaseUtils";
 
 export const useProfile = () => {
   const { address, isConnected } = useAccount();
@@ -10,10 +11,8 @@ export const useProfile = () => {
     const fetchProfileType = async () => {
       setIsLoading(true);
       if (isConnected && address) {
-        const storedProfileType = localStorage.getItem(
-          `profileType_${address}`
-        );
-        setProfileType(storedProfileType);
+        const userProfile = await getUserProfile(address);
+        setProfileType(userProfile?.profileType || null);
       } else {
         setProfileType(null);
       }
@@ -23,12 +22,5 @@ export const useProfile = () => {
     fetchProfileType();
   }, [isConnected, address]);
 
-  const updateProfileType = (newProfileType: string) => {
-    if (address) {
-      localStorage.setItem(`profileType_${address}`, newProfileType);
-      setProfileType(newProfileType);
-    }
-  };
-
-  return { profileType, updateProfileType, isLoading };
+  return { profileType, isLoading, setProfileType };
 };

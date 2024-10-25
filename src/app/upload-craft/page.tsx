@@ -111,14 +111,6 @@ const UploadCraft = () => {
       setShowMintTransaction(true);
       setStep(3);
       setImageIpfsHash(imageIpfsHash);
-
-      // Remove the updatedMetadata object creation
-
-      <MintNFTTransaction
-        metadataUrl={uploadedUrl}
-        imageIpfsHash={imageIpfsHash}
-        metadata={metadata} // Pass the original metadata here
-      />;
     } catch (error) {
       console.error("Error uploading file:", error);
       setErrorMessage("Error uploading file. Please try again.");
@@ -135,11 +127,9 @@ const UploadCraft = () => {
   const MintNFTTransaction = ({
     metadataUrl,
     imageIpfsHash,
-    metadata,
   }: {
     metadataUrl: string;
     imageIpfsHash: string | null;
-    metadata: any; // Add this prop
   }) => {
     const BASE_SEPOLIA_CHAIN_ID = 84532;
 
@@ -167,6 +157,14 @@ const UploadCraft = () => {
       async (status: LifecycleStatus) => {
         console.log("LifecycleStatus", status);
         if (status.statusName === "success") {
+          const metadata = {
+            name: title,
+            description: description,
+            image: `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY_URL}/ipfs/${imageIpfsHash}`,
+            artist_address: address || "Unknown",
+            creation_time: new Date().toISOString(),
+          };
+
           const craftId = await saveCraftDetails(metadataUrl, metadata);
           if (craftId) {
             console.log("Craft saved with ID:", craftId);
@@ -175,7 +173,7 @@ const UploadCraft = () => {
           }
         }
       },
-      [metadataUrl, metadata]
+      [metadataUrl, title, description, address, imageIpfsHash]
     );
 
     return (
@@ -465,7 +463,6 @@ const UploadCraft = () => {
                 <MintNFTTransaction
                   metadataUrl={uploadedUrl}
                   imageIpfsHash={imageIpfsHash}
-                  metadata={metadata} // Pass the original metadata here
                 />
                 <div className="flex justify-end mt-4">
                   <button

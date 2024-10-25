@@ -1,4 +1,10 @@
-import { FaUsers, FaPaintBrush, FaFire, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaUsers,
+  FaPaintBrush,
+  FaFire,
+  FaCalendarAlt,
+  FaDollarSign,
+} from "react-icons/fa";
 
 interface Stats {
   followers: number;
@@ -7,15 +13,22 @@ interface Stats {
   totalUSDCEarned: number;
 }
 
-const QuickStats = ({ stats }: { stats: Stats }) => {
+const QuickStats = ({
+  stats,
+  currency,
+}: {
+  stats: Stats;
+  currency: string;
+}) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       <StatItem label="Followers" value={stats.followers} />
       <StatItem label="NFTs Created" value={stats.nftsCreated} />
       <StatItem label="Total Flares" value={stats.totalFlares} />
-      <StatItem
-        label="Total USDC Earned"
-        value={`$${stats.totalUSDCEarned.toLocaleString()}`}
+      <StatCard
+        label={`Total ${currency} Earned`}
+        value={`${stats.totalUSDCEarned} ${currency}`}
+        icon={<FaDollarSign className="text-2xl text-green-500" />}
       />
     </div>
   );

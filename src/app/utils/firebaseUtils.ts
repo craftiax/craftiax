@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, addDoc, setDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc, getDoc, updateDoc, query, where, getDocs } from 'firebase/firestore';
 
 export const registerUser = async (address: string, email: string, profileType: string, interests: string[]) => {
   try {
@@ -56,4 +56,17 @@ export const saveCraftDetails = async (metadataUrl: string, metadata: any) => {
     console.error('Error saving craft details:', error);
     return null;
   }
+};
+
+export const fetchArtistCrafts = async (artistAddress: string) => {
+  const craftsRef = collection(db, 'crafts');
+  const q = query(craftsRef, where('artist_address', '==', artistAddress));
+  const querySnapshot = await getDocs(q);
+  
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+    flaresReceived: Math.floor(Math.random() * 100),
+    totalUSDC: Math.floor(Math.random() * 500)
+  }));
 };

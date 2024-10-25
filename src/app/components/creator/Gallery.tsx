@@ -1,21 +1,28 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { FaFire, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaFire, FaChevronLeft, FaChevronRight, FaHeart } from "react-icons/fa";
 import Link from "next/link";
+import { fetchArtistCrafts } from "../../utils/firebaseUtils";
+import { useAccount } from "wagmi";
+import { useRouter } from "next/navigation";
 
 interface NFT {
-  id: number;
-  title: string;
+  id: string;
+  name: string;
   image: string;
   flaresReceived: number;
+  likes: number;
   totalUSDC: number;
 }
 
-const Gallery = ({ nfts }: { nfts: NFT[] }) => {
+const Gallery = ({ selectedCurrency }) => {
+  const [nfts, setNfts] = useState<NFT[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  const { address } = useAccount();
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,68 +33,48 @@ const Gallery = ({ nfts }: { nfts: NFT[] }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Mock data with added USDC totals
-  const mockNfts = [
-    {
-      id: 1,
-      title: "Cosmic Dreams",
-      image: "/nft1.jpg",
-      flaresReceived: 42,
-      totalUSDC: 250,
-    },
-    {
-      id: 2,
-      title: "Digital Oasis",
-      image: "/nft2.jpg",
-      flaresReceived: 28,
-      totalUSDC: 180,
-    },
-    {
-      id: 3,
-      title: "Neon Nights",
-      image: "/nft3.jpg",
-      flaresReceived: 35,
-      totalUSDC: 210,
-    },
-    {
-      id: 4,
-      title: "Ethereal Echo",
-      image: "/nft4.jpg",
-      flaresReceived: 50,
-      totalUSDC: 300,
-    },
-    {
-      id: 5,
-      title: "Pixel Paradise",
-      image: "/nft5.jpg",
-      flaresReceived: 38,
-      totalUSDC: 225,
-    },
-    {
-      id: 6,
-      title: "Quantum Quasar",
-      image: "/nft6.jpg",
-      flaresReceived: 45,
-      totalUSDC: 270,
-    },
-  ];
+  useEffect(() => {
+    const fetchNFTs = async () => {
+      if (address) {
+        const fetchedNfts = await fetchArtistCrafts(address);
+        setNfts(fetchedNfts);
+      }
+    };
+    fetchNFTs();
+  }, [address]);
 
-  const totalPages = Math.ceil(mockNfts.length / itemsPerPage);
+  const totalPages = Math.ceil(nfts.length / itemsPerPage);
   const paginatedNfts = isMobile
-    ? mockNfts.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      )
-    : mockNfts;
+    ? nfts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    : nfts;
 
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {paginatedNfts.map((nft) => (
-          <NFTCard key={nft.id} nft={nft} isMobile={isMobile} />
-        ))}
-      </div>
-      {isMobile && totalPages > 1 && (
+      {nfts.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-lg text-gray-300 mb-4">
+            You haven&apos;t uploaded any crafts yet.
+          </p>
+          <button
+            onClick={() => router.push("/upload-craft")}
+            className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+          >
+            Upload Your First Craft
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {paginatedNfts.map((nft) => (
+            <NFTCard
+              key={nft.id}
+              nft={nft}
+              isMobile={isMobile}
+              selectedCurrency={selectedCurrency}
+            />
+          ))}
+        </div>
+      )}
+      {isMobile && nfts.length > 0 && totalPages > 1 && (
         <div className="flex justify-center items-center mt-4">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -114,34 +101,45 @@ const Gallery = ({ nfts }: { nfts: NFT[] }) => {
   );
 };
 
-const NFTCard = ({ nft, isMobile }: { nft: NFT; isMobile: boolean }) => {
+const NFTCard = ({
+  nft,
+  isMobile,
+  selectedCurrency,
+}: {
+  nft: NFT;
+  isMobile: boolean;
+  selectedCurrency: string;
+}) => {
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden transition-transform hover:scale-105">
       <div className={`relative ${isMobile ? "h-32" : "h-48"}`}>
-        <Image
-          src={nft.image}
-          alt={nft.title}
-          layout="fill"
-          objectFit="cover"
-        />
+        <Image src={nft.image} alt={nft.name} layout="fill" objectFit="cover" />
       </div>
       <div className="p-2 sm:p-4">
         <h3
           className={`font-semibold mb-1 sm:mb-2 ${isMobile ? "text-xs" : "text-lg"}`}
         >
-          {nft.title}
+          {nft.name}
         </h3>
         <div
-          className={`flex items-center text-orange-500 mb-1 sm:mb-2 ${isMobile ? "text-xs" : "text-sm"}`}
+          className={`flex items-center justify-between text-orange-500 mb-1 sm:mb-2 ${isMobile ? "text-xs" : "text-sm"}`}
         >
-          <FaFire className="mr-1 sm:mr-2" />
-          <span>{nft.flaresReceived} flares</span>
+          <div className="flex items-center">
+            <FaFire className="mr-1 sm:mr-2" />
+            <span>{nft.flaresReceived || 0} flares</span>
+          </div>
+          <div className="flex items-center">
+            <FaHeart className="mr-1 sm:mr-2" />
+            <span>{nft.likes || 0} likes</span>
+          </div>
         </div>
         <Link href={`/flare-details/${nft.id}`}>
           <button
             className={`w-full bg-orange-500 text-white py-1 sm:py-2 rounded-md hover:bg-orange-600 transition-colors ${isMobile ? "text-xs" : "text-sm"}`}
           >
-            ${nft.totalUSDC} USDC Received
+            {selectedCurrency === "USDC"
+              ? `$${nft.totalUSDC || 0} USDC`
+              : `${nft.totalUSDC || 0} ${selectedCurrency}`}
           </button>
         </Link>
       </div>

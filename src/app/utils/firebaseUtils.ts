@@ -42,3 +42,18 @@ export const updateUserProfileType = async (address: string, profileType: string
     return false;
   }
 };
+
+export const saveCraftDetails = async (metadataUrl: string, metadata: any) => {
+  try {
+    const craftCollectionRef = collection(db, 'crafts');
+    const craftDocRef = await addDoc(craftCollectionRef, {
+      ...metadata,
+      metadataUrl,
+      createdAt: new Date().toISOString(),
+    });
+    return craftDocRef.id; // Return the unique ID of the newly created document
+  } catch (error) {
+    console.error('Error saving craft details:', error);
+    return null;
+  }
+};

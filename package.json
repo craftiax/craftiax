@@ -33,6 +33,7 @@
     "react-slick": "^0.30.2",
     "react-window": "^1.8.10",
     "slick-carousel": "^1.8.1",
+    "uuid": "^10.0.0",
     "viem": "latest",
     "wagmi": "latest"
   },

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import ClientLayout from "../ClientLayout";
 import { FaImage, FaMusic, FaVideo, FaTimes } from "react-icons/fa";
@@ -9,10 +9,13 @@ import { useAccount } from "wagmi";
 import {
   Transaction,
   TransactionButton,
-  TransactionStatus,
-  TransactionStatusLabel,
-  TransactionStatusAction,
+  TransactionToast,
+  TransactionToastIcon,
+  TransactionToastLabel,
+  TransactionToastAction,
 } from "@coinbase/onchainkit/transaction";
+import type { LifecycleStatus } from "@coinbase/onchainkit/transaction";
+import { saveCraftDetails } from "../utils/firebaseUtils"; // Ensure this import is correct
 
 const UploadCraft = () => {
   const router = useRouter();
@@ -28,9 +31,10 @@ const UploadCraft = () => {
   const [showMintTransaction, setShowMintTransaction] = useState(false);
   const [step, setStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [showMetadata, setShowMetadata] = useState(false); // Set to false by default
-  const [showFinalMetadata, setShowFinalMetadata] = useState(true); // Set to false by default
-  const [showThumbnail, setShowThumbnail] = useState(false); // New flag for thumbnail display, set to false by default
+  const [showMetadata, setShowMetadata] = useState(false);
+  const [showFinalMetadata, setShowFinalMetadata] = useState(true);
+  const [showThumbnail, setShowThumbnail] = useState(false);
+  const [imageIpfsHash, setImageIpfsHash] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -52,8 +56,8 @@ const UploadCraft = () => {
 
       setFile(selectedFile);
       setPreviewUrl(URL.createObjectURL(selectedFile));
-      setTitle(selectedFile.name.split(".").slice(0, -1).join(".")); // Set title to file name without extension
-      setErrorMessage(null); // Clear error message on successful file selection
+      setTitle(selectedFile.name.split(".").slice(0, -1).join("."));
+      setErrorMessage(null);
     }
   };
 
@@ -105,7 +109,16 @@ const UploadCraft = () => {
       setUploadedUrl(uploadedUrl);
       console.log("Metadata uploaded to IPFS:", metadataIpfsHash);
       setShowMintTransaction(true);
-      setStep(3); // Move to the mint NFT step
+      setStep(3);
+      setImageIpfsHash(imageIpfsHash);
+
+      // Remove the updatedMetadata object creation
+
+      <MintNFTTransaction
+        metadataUrl={uploadedUrl}
+        imageIpfsHash={imageIpfsHash}
+        metadata={metadata} // Pass the original metadata here
+      />;
     } catch (error) {
       console.error("Error uploading file:", error);
       setErrorMessage("Error uploading file. Please try again.");
@@ -119,7 +132,15 @@ const UploadCraft = () => {
     setPreviewUrl(null);
   };
 
-  const MintNFTTransaction = ({ metadataUrl }: { metadataUrl: string }) => {
+  const MintNFTTransaction = ({
+    metadataUrl,
+    imageIpfsHash,
+    metadata,
+  }: {
+    metadataUrl: string;
+    imageIpfsHash: string | null;
+    metadata: any; // Add this prop
+  }) => {
     const BASE_SEPOLIA_CHAIN_ID = 84532;
 
     const contracts = [
@@ -142,16 +163,36 @@ const UploadCraft = () => {
       },
     ];
 
+    const handleOnStatus = useCallback(
+      async (status: LifecycleStatus) => {
+        console.log("LifecycleStatus", status);
+        if (status.statusName === "success") {
+          const craftId = await saveCraftDetails(metadataUrl, metadata);
+          if (craftId) {
+            console.log("Craft saved with ID:", craftId);
+          } else {
+            console.error("Failed to save craft details");
+          }
+        }
+      },
+      [metadataUrl, metadata]
+    );
+
     return (
-      <Transaction chainId={BASE_SEPOLIA_CHAIN_ID} contracts={contracts}>
+      <Transaction
+        chainId={BASE_SEPOLIA_CHAIN_ID}
+        contracts={contracts}
+        onStatus={handleOnStatus}
+      >
         <TransactionButton
           text="Process Craft"
           className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md"
-        ></TransactionButton>
-        <TransactionStatus>
-          <TransactionStatusLabel className="text-white" />
-          <TransactionStatusAction className="bg-orange-500 hover:bg-orange-600" />
-        </TransactionStatus>
+        />
+        <TransactionToast>
+          <TransactionToastIcon />
+          <TransactionToastLabel />
+          <TransactionToastAction />
+        </TransactionToast>
       </Transaction>
     );
   };
@@ -267,7 +308,7 @@ const UploadCraft = () => {
                   </p>
                 )}
                 {file &&
-                  showThumbnail && // Use the new flag here
+                  showThumbnail &&
                   (file.type.startsWith("audio") ||
                     file.type.startsWith("video")) && (
                     <div className="flex items-center justify-center w-full mt-4">
@@ -407,7 +448,7 @@ const UploadCraft = () => {
                   Step 3: Almost done, click on the button to process craft.
                   Please note that a negligible gas fee is required.
                 </p>
-                {showFinalMetadata && ( // Use the new flag here
+                {showFinalMetadata && (
                   <div className="mb-4 p-4 bg-gray-800 rounded-md">
                     <h3 className="text-lg font-semibold text-white mb-2">
                       Metadata
@@ -421,7 +462,11 @@ const UploadCraft = () => {
                     </p>
                   </div>
                 )}
-                <MintNFTTransaction metadataUrl={uploadedUrl} />
+                <MintNFTTransaction
+                  metadataUrl={uploadedUrl}
+                  imageIpfsHash={imageIpfsHash}
+                  metadata={metadata} // Pass the original metadata here
+                />
                 <div className="flex justify-end mt-4">
                   <button
                     type="button"
